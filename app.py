@@ -19,8 +19,8 @@ Base = automap_base()
 Base.prepare(engine, reflect=True)
 
 # Save reference to the table
-measurement = Base.classes.measurement
-station = Base.classes.station
+Measurement = Base.classes.measurement
+Station = Base.classes.station
 
 #from jupyter notebook, some data needed for flask
 #precipitation in jupyter = last_date here
@@ -57,8 +57,8 @@ def precipitation():
     # Create our session (link) from Python to the DB
     session = Session(engine)
 
-    results = session.query(measurement.date, measurement.prcp).\
-        filter(measurement.date >= one_year).order_by(measurement.date).all()
+    results = session.query(Measurement.date, Measurement.prcp).\
+        filter(Measurement.date >= one_year).order_by(Measurement.date).all()
 
     session.close()
 
@@ -69,6 +69,42 @@ def precipitation():
         ppt_dict[data.date] = data.prcp
         ppt.append(ppt_dict)
     return jsonify(ppt)
+
+#Return a JSON list of stations from the dataset.
+@app.route("/api/v1.0/stations")
+def stations():
+    session = Session(engine)
+    results = session.query(Station.station).all()
+    session.close()
+
+    # Convert list of tuples into normal list
+    all_names = list(np.ravel(results))
+
+    return jsonify(all_names)
+
+#Query the dates and temperature observations of the most active station for the last year of data.
+  
+#Return a JSON list of temperature observations (TOBS) for the previous year.
+
+@app.route("/api/v1.0/tobs")
+def tobs():
+    session = Session(engine)
+    results = session.query(Measurement.date, Measurement.tobs).\
+        filter(Measurement.station == most_active_station).\
+        filter(Measurement.date >= one_year).\
+        all()
+    session.close()
+
+    tobs_list  = []
+    for date, tobs in results:
+        tobs_data = {}
+        tobs_data["Station"] = most_active_station
+        tobs_data["Date"] = date
+        tobs_data["Temp Obs"] = tobs
+        tobs_list.append(tobs_data)
+
+    return jsonify(tobs_list)    
+
 
 if __name__ == '__main__':
     app.run(debug=False)
