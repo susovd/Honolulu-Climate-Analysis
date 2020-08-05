@@ -24,7 +24,7 @@ Station = Base.classes.station
 #precipitation in jupyter = last_date here
 last_date = "2017-08-23"
 one_year = "2016-08-23"
-most_active_station = " USC00519281"
+most_active_station = "USC00519281"
 
 
 #################################################
@@ -112,12 +112,12 @@ def tobs():
 @app.route("/api/v1.0/<start>")
 def start_date(start):
     session = Session(engine)
-    results = session.query(Measurement.date, func.min(Measurement.tobs), func.avg(Measurement.tobs),func.max(Measurement.tobs)).\
+    results = session.query(func.min(Measurement.tobs), func.avg(Measurement.tobs),func.max(Measurement.tobs)).\
         filter(Measurement.date >= start).all()
 
     session.close()
     start_date_numbers = []
-
+    #print(results)
     for tmin, tavg, tmax in results:
         start_date = {}
         start_date["Minimum Temperature"] = tmin
@@ -133,11 +133,12 @@ def start_date(start):
 @app.route("/api/v1.0/<start>/<end>")
 def start_and_end(start, end):
     session = Session(engine)
-    results = session.query(Measurement.date, func.min(Measurement.tobs), func.avg(Measurement.tobs),func.max(Measurement.tobs)).\
+    results = session.query(func.min(Measurement.tobs), func.avg(Measurement.tobs),func.max(Measurement.tobs)).\
         filter(Measurement.date >= start).\
         filter(Measurement.date <= end).all()
-
+    print(results)
     session.close()
+    start_date_numbers = []
     for tmin, tavg, tmax in results:
         start_date = {}
         start_date["Minimum Temperature"] = tmin
