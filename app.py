@@ -121,16 +121,16 @@ def start_date(start):
         filter(Measurement.date >= start).all()
 
     session.close()
-    start_date_numbers = []
+    start_date_only = []
     #print(results)
     for tmin, tavg, tmax in results:
         start_date = {}
         start_date["Minimum Temperature"] = tmin
         start_date["Average Temperature"] = tavg
         start_date["Maximum Temperature"] = tmax
-        start_date_numbers.append(start_date)
+        start_date_only.append(start_date)
 
-    return jsonify(start_date_numbers)
+    return jsonify(start_date_only)
 
 
 # `/api/v1.0/<start>/<end>`
@@ -143,15 +143,15 @@ def start_and_end(start, end):
         filter(Measurement.date <= end).all()
     print(results)
     session.close()
-    start_date_numbers = []
+    date_range = []
     for tmin, tavg, tmax in results:
-        start_date = {}
-        start_date["Minimum Temperature"] = tmin
-        start_date["Average Temperature"] = tavg
-        start_date["Maximum Temperature"] = tmax
-        start_date_numbers.append(start_date)
+        two_dates = {}
+        two_dates["Minimum Temperature"] = tmin
+        two_dates["Average Temperature"] = tavg
+        two_dates["Maximum Temperature"] = tmax
+        date_range.append(start_date)
 
-    return jsonify(start_date_numbers)
+    return jsonify(date_range)
 
 if __name__ == '__main__':
     app.run(debug=False)
