@@ -45,7 +45,10 @@ def home():
         f"/api/v1.0/precipitation<br/>"
         f"/api/v1.0/stations<br>"
         f"/api/v1.0/tobs<br>"
+        f"Enter dates in YYYY-MM-DD formats<br>"
+        f"If you only provide start date, you will get minimum, average and maximum temperature for all dates greater than the date you specified.<br>"
         f"/api/v1.0/<start><br>"
+        f"If you provide a start and end date, you will get a JSON list of the minimum temperature, the average temperature, and the max temperature for a given start or start-end range.<br>"
         f"/api/v1.0/<start>/<end>"
     )
 # Convert the query results to a dictionary using `date` as the key and `prcp` as the value.
